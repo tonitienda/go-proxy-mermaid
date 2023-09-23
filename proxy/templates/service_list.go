@@ -33,10 +33,44 @@ func GetMermaidNodeList(nodes []models.Node) string {
 	return nodeList
 }
 
+func GetMermaidConnections(nodes []models.Node) string {
+	connectionList := ""
+
+	for _, node := range nodes {
+		if node.RequestorID != "" {
+			connectionList += "\t" + node.RequestorID + " --> " + node.ID + "\n"
+		}
+	}
+
+	return connectionList
+}
+
+var Styles string = "\tclassDef Level0 stroke-width:2px,stroke:#000,fill:#fff;\n" +
+	"\tclassDef Level2 stroke-width:2px,stroke:#000,fill:#fff;\n" +
+	"\tclassDef Level3 stroke-width:2px,stroke:#000,fill:#fff;\n" +
+	"\tclassDef Level4 stroke-width:2px,stroke:#000,fill:#fff;\n" +
+	"\tclassDef Level5 stroke-width:2px,stroke:#000,fill:#fff;\n" +
+	"\tclassDef Level6 stroke-width:2px,stroke:#000,fill:#fff;\n" +
+	"\tclassDef Level7 stroke-width:2px,stroke:#000,fill:#fff;\n"
+
+func GetNodesStyles(nodes []models.Node) string {
+
+	nodesStyles := ""
+
+	for _, node := range nodes {
+		nodesStyles += "\tclass " + node.ID + " Level0\n"
+
+	}
+
+	return nodesStyles
+}
+
 func GetMermaidDiagram(nodes []models.Node) string {
 	nodeList := GetMermaidNodeList(nodes)
+	connectionsList := GetMermaidConnections(nodes)
+	applyStyles := GetNodesStyles(nodes)
 
-	return "graph LR\n" + nodeList + "\tclassDef Level0 stroke-width:2px,stroke:#000,fill:#fff;\n"
+	return "graph LR\n" + nodeList + connectionsList + Styles + applyStyles
 }
 
 func GetPage(nodes []models.Node) string {
@@ -46,9 +80,9 @@ func GetPage(nodes []models.Node) string {
 		<script language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.4.0/mermaid.min.js"></script>
 	</head>
 	<body>
-		<pre class="mermaid">` +
+		<div class="mermaid">` +
 		GetMermaidDiagram(nodes) +
-		`</pre>
+		`</div>
 	</body>
 	</html>`
 }

@@ -13,15 +13,23 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/", func(c *gin.Context) {
-		data := controllers.GetServiceData()
 
 		fmt.Println("Requesting", c.Request.URL.Path)
-		switch c.NegotiateFormat(gin.MIMEHTML, gin.MIMEJSON) {
-		case gin.MIMEHTML:
+
+		requestorID := c.Query("requestorID")
+		data := controllers.GetServiceData(requestorID)
+
+		fmt.Println("Data", data)
+		requestedContentType := c.Request.Header.Get("Content-Type")
+		fmt.Println("Request headers", c.Request.Header)
+		switch requestedContentType {
+		case gin.MIMEJSON:
+			fmt.Println("JSON", data)
+			c.JSON(200, data)
+		default:
 			page := templates.GetPage(data)
 			c.Data(200, "text/html; charset=utf-8", []byte(page))
-		case gin.MIMEJSON:
-			c.JSON(200, data)
+
 		}
 	})
 
