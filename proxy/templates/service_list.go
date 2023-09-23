@@ -6,9 +6,21 @@ import (
 	"github.com/tonitienda/go-proxy-mermaid/models"
 )
 
+var NodeTemplate = "#ID#[\"#NAME#\n\t(#ID#)\"]"
+
+func ReplaceMultiple(text string, replacements map[string]string) string {
+	for key, value := range replacements {
+		text = strings.ReplaceAll(text, key, value)
+	}
+
+	return text
+}
+
 func GetMermaidNode(node models.Node) string {
-	return strings.ReplaceAll(strings.ReplaceAll(`#ID#["#NAME#
-	(#ID#)"]`, "#ID#", node.ID), "#NAME#", node.Name)
+	return ReplaceMultiple(NodeTemplate, map[string]string{
+		"#ID#":   node.ID,
+		"#NAME#": node.Name,
+	})
 }
 
 func GetMermaidNodeList(nodes []models.Node) string {
