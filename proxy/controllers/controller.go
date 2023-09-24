@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -57,23 +58,30 @@ func getRemoteServiceData() ([]models.Node, error) {
 		return []models.Node{}, nil
 	}
 
-	serviceData := []models.Node{}
-	getJson(nextSvc+"?requestorID="+shortID, &serviceData)
+	urls := strings.Split(nextSvc, ",")
+	allServicesData := []models.Node{}
 
-	return serviceData, nil
+	for _, url := range urls {
+		serviceData := []models.Node{}
+		getJson(url+"?requestorID="+shortID, &serviceData)
+		allServicesData = append(allServicesData, serviceData...)
+	}
+
+	return allServicesData, nil
 
 }
 
-func GetCurrentServiceData(requestorID string) models.Node {
+func GetCurrentServiceData(requestorID string, serviceURL string) models.Node {
 	return models.Node{
 		ID:          shortID,
 		Name:        getEnv("SERVICE_NAME", "Service"),
 		RequestorID: requestorID,
+		Url:         serviceURL,
 	}
 }
 
-func GetServiceData(requestorID string) []models.Node {
-	currentService := GetCurrentServiceData(requestorID)
+func GetServiceData(requestorID string, serviceUrl string) []models.Node {
+	currentService := GetCurrentServiceData(requestorID, serviceUrl)
 	fmt.Println("Current service", currentService)
 	services := []models.Node{}
 
