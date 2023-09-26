@@ -7,8 +7,8 @@ HTTP Proxy server used for demos
 ### Env Vars
 
 - `PORT`: Port to listen on (default: 8080)
-- `PROXY_URL`: URL to proxy to (default: http://localhost:8081). Can be a comma-separated list of URLs to forward the request to multiple servers.
-- `NAME`: Name of the server (default: proxy)
+- `NEXT_SERVICE`: URL to proxy to (default: http://localhost:8081). Can be a comma-separated list of URLs to forward the request to multiple servers.
+- `SERVICE_NAME`: Name of the server (default: proxy)
 
 
 ### Responses
@@ -45,3 +45,10 @@ graph LR
     class bef70617 Level2
     class 6dbb8570 Level5
 ```
+
+### Improvements
+
+- [ ] Add support for failed requests
+  Show red nodes as not accessible and show the error codes
+- [ ] Add support for fake auth
+  Return 401 or 402 based on some simple configuration
