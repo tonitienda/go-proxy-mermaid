@@ -24,7 +24,7 @@ CMD go run cmd/main.go
 FROM dependencies as build
 WORKDIR /usr/app/src
 
-RUN ls && ls cmd
+RUN echo "Building for $GO_ARCH"
 
 RUN GOOS=linux GOARCH=$GO_ARCH CGO_ENABLED=0 go build -ldflags '-w -s' -a -installsuffix cgo -o /usr/app/src/proxy /usr/app/src/cmd/main.go && \
     mkdir -p /usr/app && \

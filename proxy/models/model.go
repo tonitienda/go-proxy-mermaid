@@ -8,4 +8,5 @@ type Node struct {
 	Name        string
 	Url         string
 	RequestorID string
+	HasError    bool
 }

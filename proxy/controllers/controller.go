@@ -63,8 +63,20 @@ func getRemoteServiceData() ([]models.Node, error) {
 
 	for _, url := range urls {
 		serviceData := []models.Node{}
-		getJson(url+"?requestorID="+shortID, &serviceData)
-		allServicesData = append(allServicesData, serviceData...)
+		error := getJson(url+"?requestorID="+shortID, &serviceData)
+
+		if error != nil {
+			allServicesData = append(allServicesData, models.Node{
+				ID:          uuid.NewString()[0:8],
+				Name:        url,
+				RequestorID: shortID,
+				HasError:    true,
+				Url:         url,
+			})
+
+		} else {
+			allServicesData = append(allServicesData, serviceData...)
+		}
 	}
 
 	return allServicesData, nil

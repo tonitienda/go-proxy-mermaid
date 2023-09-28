@@ -32,6 +32,7 @@ func main() {
 			c.JSON(200, data)
 		default:
 			page := templates.GetPage(data)
+			fmt.Println(page)
 			c.Data(200, "text/html; charset=utf-8", []byte(page))
 
 		}

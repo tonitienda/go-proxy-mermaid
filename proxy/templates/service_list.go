@@ -56,12 +56,7 @@ func GetMermaidConnections(nodes []models.Node) string {
 }
 
 var StyleLevels int = 6
-var Styles string = "\tclassDef Level0 stroke-width:2px,stroke:#5af,fill:#9ef;\n" +
-	"\tclassDef Level1 stroke-width:1px,stroke:#38f,fill:#5af;\n" +
-	"\tclassDef Level2 stroke-width:1px,stroke:#06f,fill:#38f;\n" +
-	"\tclassDef Level3 stroke-width:1px,stroke:#04f,fill:#06f;\n" +
-	"\tclassDef Level4 stroke-width:1px,stroke:#00f,fill:#04f;\n" +
-	"\tclassDef Level5 stroke-width:1px,stroke:#00d,fill:#00f;\n"
+var ErrorStyle string = "\tclassDef Error stroke-width:2px,stroke:#d00,fill:#f50;\n"
 
 func GetStyles() string {
 	saturationStep := (MaxSaturation - MinSaturation) / NumberOfLevels
@@ -102,7 +97,11 @@ func GetNodesStyles(nodes []models.Node) string {
 	nodesStyles := ""
 
 	for idx, node := range nodes {
-		nodesStyles += "\tclass " + node.ID + " Level" + fmt.Sprintf("%d", (idx%StyleLevels)) + "\n"
+		if node.HasError {
+			nodesStyles += "\tclass " + node.ID + " Error\n"
+		} else {
+			nodesStyles += "\tclass " + node.ID + " Level" + fmt.Sprintf("%d", (idx%StyleLevels)) + "\n"
+		}
 
 	}
 
@@ -112,7 +111,7 @@ func GetNodesStyles(nodes []models.Node) string {
 func GetMermaidDiagram(nodes []models.Node) string {
 	nodeList := GetMermaidNodeList(nodes)
 	connectionsList := GetMermaidConnections(nodes)
-	styles := GetStyles()
+	styles := GetStyles() + ErrorStyle
 	applyStyles := GetNodesStyles(nodes)
 
 	fmt.Println("Styles", styles)
